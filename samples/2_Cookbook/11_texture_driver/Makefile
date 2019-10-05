@@ -1,17 +1,13 @@
-HIP_PATH?= $(wildcard /opt/rocm/hip)
-ifeq (,$(HIP_PATH))
-	HIP_PATH=../../..
-endif
-HIPCC=$(HIP_PATH)/bin/hipcc
-HIP_PLATFORM=$(shell $(HIP_PATH)/bin/hipconfig --compiler)
+include ../../common_pre.mk
 
-all: tex2dKernel.code texture2dDrv.out
+SOURCES = texture2dDrv.cpp
+EXECUTABLE =./texture2dDrv
+HIPCC_FLAGS =-O3
 
-texture2dDrv.out: texture2dDrv.cpp
-	$(HIPCC) $(HIPCC_FLAGS) $< -o $@
-	
+.PHONY: all
+all: $(EXECUTABLE) tex2dKernel.code test
+
 tex2dKernel.code: tex2dKernel.cpp
-	$(HIPCC)  --genco  $(GENCO_FLAGS) $^ -o $@
+	$(HIPCC) --genco $(GENCO_FLAGS) $^ -o $@
 
-clean:
-	rm -f *.code *.out
+include ../../common_post.mk

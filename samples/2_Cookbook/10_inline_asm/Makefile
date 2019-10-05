@@ -1,35 +1,10 @@
-HIP_PATH?= $(wildcard /opt/rocm/hip)
-ifeq (,$(HIP_PATH))
-	HIP_PATH=../../..
-endif
-
-HIPCC=$(HIP_PATH)/bin/hipcc
-
-TARGET=hcc
+include ../../common_pre.mk
 
 SOURCES = inline_asm.cpp
-OBJECTS = $(SOURCES:.cpp=.o)
-
 EXECUTABLE=./inline_asm
+HIPCC_FLAGS =-O3
 
-.PHONY: test
-
-
+.PHONY: all
 all: $(EXECUTABLE) test
 
-CXXFLAGS =-g
-CXX=$(HIPCC)
-
-
-$(EXECUTABLE): $(OBJECTS)
-	$(HIPCC) $(OBJECTS) -o $@
-
-
-test: $(EXECUTABLE)
-	$(EXECUTABLE)
-
-
-clean:
-	rm -f $(EXECUTABLE)
-	rm -f $(OBJECTS)
-
+include ../../common_post.mk

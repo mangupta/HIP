@@ -1,20 +1,10 @@
-HIP_PATH?= $(wildcard /opt/rocm/hip)
-ifeq (,$(HIP_PATH))
-	HIP_PATH=../../..
-endif
-HIPCC=$(HIP_PATH)/bin/hipcc
+include ../../common_pre.mk
 
-EXE=./occupancy
+SOURCES = occupancy.cpp
+EXECUTABLE = ./occupancy
+HIPCC_FLAGS =-O3
 
-.PHONY: test
+.PHONY: all
+all: $(EXECUTABLE) test
 
-all: test
-
-$(EXE): occupancy.cpp
-	$(HIPCC) $^ -o $@
-
-test: $(EXE)
-	$(EXE)
-
-clean:
-	rm -f *.o $(EXE)
+include ../../common_post.mk
